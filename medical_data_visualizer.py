@@ -7,16 +7,12 @@ import numpy as np
 df = pd.read_csv('medical_examination.csv')
 
 # Add 'overweight' column
-#df['BMI'] = (df['weight'] / (df['height']*df['height']/10000)).round(decimals =1)
-df.loc[(df['weight'] / (df['height']*df['height']/10000)).round(decimals =2) > 25, 'overweight'] = 1
-df.loc[(df['weight'] / (df['height']*df['height']/10000)).round(decimals =2) <= 25, 'overweight'] = 0
+df['overweight'] = (df.weight/((df.height/100)**2)>25)*1
 
 
 # Normalize data by making 0 always good and 1 always bad. If the value of 'cholestorol' or 'gluc' is 1, make the value 0. If the value is more than 1, make the value 1.
-df.loc[df['cholesterol']==1, 'cholesterol'] = 0
-df.loc[df['cholesterol']>1, 'cholesterol']= 1
-df.loc[df['gluc'] == 1, 'gluc'] = 0
-df.loc[df['gluc'] > 1, 'gluc'] = 1
+df['cholesterol'] = (df.cholesterol >1)*1
+df['gluc'] = (df.gluc >1)*1
 
 
 
@@ -56,7 +52,7 @@ def draw_heat_map():
     
     
     # Calculate the correlation matrix
-    corr = (df_heat.corr()).round(decimals=1)
+    corr = df_heat.corr().round(1)
 
     
 
@@ -70,7 +66,7 @@ def draw_heat_map():
     
 
     # Draw the heatmap with 'sns.heatmap()'
-    ax = sns.heatmap(corr, mask=mask, vmin=-0.1, vmax=0.7, annot=True, fmt='.1f')
+    ax = sns.heatmap(corr, mask=mask, annot=True, fmt='.1f')
     
 
 
